@@ -26,6 +26,9 @@ if (!isNumber(N)) {
 }
 else {
     let result = simpleNumbers(parseInt(N))
+    if (result.length == 0) {
+        console.log(colors[0](`no simple number in 0..${N}`))
+    }
     let x = 0
     result.forEach(item => {
         console.log(colors[x](item));
