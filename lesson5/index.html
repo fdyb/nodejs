@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <h1>File Browser</h1>
+    <div id="fm">
+        <p>path:<span id="path">/</span></p>
+        <ul>
+            <li id="userfiles">userfiles</li>
+        </ul>
+    </div>
+    <p>Choose file / directory</p>
+    <div id="file_content">
+
+    </div>
+
+    <script>
+        const choose = async (event) => {
+            const parentDir = document.getElementById("path").innerText;
+            let params = {
+                parentDir: parentDir,
+                element: event.target.id
+            };
+            let response = await fetch('/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(params)
+            });
+            if (response.ok) {
+                const ContentType = response.headers.get('Content-Type');
+                let data = "-";
+                let lis
+                if (ContentType === 'text/html') {
+                    data = await response.text()
+document.getElementById("file_content").innerHTML = data;
+                }
+                if (ContentType === 'json') {
+                    data = await response.json();
+                    const fm = document.getElementById("fm");
+                    fm.innerHTML = `
+                    <p>path:<span id="path">${data.parentDir}</span></p>
+                    <ul>
+                    <li id="home">..</li>
+                    </ul>`;
+                    const ul = document.getElementById("fm").querySelector('ul');
+                    data.list.forEach(elem => {
+                        ul.innerHTML += `<li id="${elem}">${elem}</li>`;
+                    });
+                    document.querySelectorAll("li").forEach((element) => {
+                        element.addEventListener("click", choose);
+                    });
+                }
+            }
+        }
+
+        document.querySelectorAll("li").forEach((element) => {
+            element.addEventListener("click", choose);
+        });
+    </script>
+</body>
+
+</html>

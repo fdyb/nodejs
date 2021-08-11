@@ -1,0 +1,11 @@
+li {
+    margin: 7px 0px;
+    list-style-type: lower-alpha;
+    cursor: pointer;
+}
+
+#file_content {
+    padding: 7px;
+
+    border: 1px solid #474e4e;
+}
